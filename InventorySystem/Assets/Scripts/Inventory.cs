@@ -53,6 +53,8 @@ public class Inventory : MonoBehaviour {
 
 	void Start () {
 		CreateLayout();
+
+		movingSlot = GameObject.Find("MovingSlot").GetComponent<Slot>();
 	}
 
 	void Update () {
@@ -61,10 +63,14 @@ public class Inventory : MonoBehaviour {
 				sourceSlot.GetComponent<Image>().color = Color.white;
 				sourceSlot.ClearSlot();
 				Destroy(GameObject.Find("Hover"));
+				//PutItemBack();
 				destinationSlot = null;
 				sourceSlot = null;
 				Destroy (GameObject.Find ("Hover"));
 				emptySlots += 1;
+			} else if (!eventSystem.IsPointerOverGameObject(-1) && !movingSlot.IsEmpty) {
+				movingSlot.ClearSlot();
+				Destroy (GameObject.Find("Hover"));
 			}
 		}
 
@@ -79,10 +85,11 @@ public class Inventory : MonoBehaviour {
 			if (shown) {
 				Hide ();
 				if (GameObject.Find("Hover")) {
-					sourceSlot.GetComponent<Image>().color = Color.white;
+					PutItemBack();
+					/*sourceSlot.GetComponent<Image>().color = Color.white;
 					sourceSlot = null;
 					destinationSlot = null;
-					Destroy (GameObject.Find ("Hover"));
+					Destroy (GameObject.Find ("Hover"));*/
 				}
 			} else Show ();
 		}
@@ -129,8 +136,12 @@ public class Inventory : MonoBehaviour {
 
 				if (!slotScript.IsEmpty) {
 					if (slotScript.CurrentItem.type == item.type && slotScript.IsAvailableForStacking) {
-						slotScript.AddItem(item);
-						return true;
+						if (!movingSlot.IsEmpty && clicked.GetComponent<Slot>() == slotScript.GetComponent<Slot>()) {
+							continue;
+						} else {
+							slotScript.AddItem(item);
+							return true;
+						}
 					}
 				}
 			}
@@ -159,6 +170,23 @@ public class Inventory : MonoBehaviour {
 		return false;
 	}
 
+	private void PutItemBack() {
+		if (sourceSlot != null) {
+			Destroy(GameObject.Find("Hover"));
+			sourceSlot.GetComponent<Image>().color = Color.white;
+			sourceSlot = null;
+		} else if (!movingSlot.IsEmpty) {
+			Destroy(GameObject.Find("Hover"));
+			foreach (var item in movingSlot.Items) {
+				clicked.GetComponent<Slot>().AddItem(item);
+			}
+
+			movingSlot.ClearSlot();
+		}
+
+		selectStackSize.SetActive(false);
+	}
+
 	public void MoveItem(GameObject clicked) {
 		Inventory.clicked = clicked;
 
@@ -167,39 +195,44 @@ public class Inventory : MonoBehaviour {
 
 			if (tempSlot.IsEmpty) {
 				tempSlot.AddItems(movingSlot.Items);
-				movingSlot.ClearSlot();
+				movingSlot.Items.Clear();
 				Destroy (GameObject.Find("Hover"));
-			} else if (tempSlot.IsEmpty && movingSlot.CurrentItem.type == tempSlot.CurrentItem.type && tempSlot.IsAvailableForStacking) {
+			} else if (!tempSlot.IsEmpty && movingSlot.CurrentItem.type == tempSlot.CurrentItem.type && tempSlot.IsAvailableForStacking) {
 				MergeStacks(movingSlot, tempSlot);
 			}
 		} else if (sourceSlot == null && !Input.GetKey(KeyCode.LeftShift)) {
-			if (!clicked.GetComponent<Slot>().IsEmpty) {
+			if (!clicked.GetComponent<Slot>().IsEmpty && !GameObject.Find("Hover")) {
 				sourceSlot = clicked.GetComponent<Slot>();
 				sourceSlot.GetComponent<Image>().color = Color.gray;
 
 				CreateHoverIcon();
 			}
-		} else if (destinationSlot == null) {
+		} else if (destinationSlot == null && !Input.GetKey(KeyCode.LeftShift)) {
 			destinationSlot = clicked.GetComponent<Slot>();
 			Destroy (GameObject.Find ("Hover"));
 		}
 
 		if (destinationSlot != null && sourceSlot != null) {
-			Stack<Item> temp = new Stack<Item>(destinationSlot.Items);
-			destinationSlot.AddItems(sourceSlot.Items);
-			destinationSlot.UpdateStackText();
-
-			if (temp.Count == 0) {
-				sourceSlot.ClearSlot();
+			if (!destinationSlot.IsEmpty && sourceSlot.CurrentItem.type == destinationSlot.CurrentItem.type && destinationSlot.IsAvailableForStacking) {
+				MergeStacks(sourceSlot, destinationSlot);
 			} else {
-				sourceSlot.AddItems(temp);
-				sourceSlot.UpdateStackText();
+				Stack<Item> temp = new Stack<Item>(destinationSlot.Items);
+				destinationSlot.AddItems(sourceSlot.Items);
+				destinationSlot.UpdateStackText();
+
+				if (temp.Count == 0) {
+					sourceSlot.ClearSlot();
+				} else {
+					sourceSlot.AddItems(temp);
+					sourceSlot.UpdateStackText();
+				}
 			}
 
 			sourceSlot.GetComponent<Image>().color = Color.white;
 			sourceSlot = null;
 			destinationSlot = null;
 			Destroy (GameObject.Find ("Hover"));
+			
 		}
 	}
 
@@ -216,7 +249,12 @@ public class Inventory : MonoBehaviour {
 		
 		//hoverObject.transform.SetParent(GameObject.Find("Canvas").transform, true);
 		hoverObject.transform.SetParent(GameObject.Find("Inventory").transform, false);
-		hoverObject.transform.localScale = sourceSlot.gameObject.transform.localScale;
+		hoverObject.transform.localScale = clicked.gameObject.transform.localScale;
+
+		if (sourceSlot == null || sourceSlot.IsEmpty)
+			hoverObject.transform.GetChild(0).GetComponent<Text>().text = movingSlot.Items.Count > 1 ? movingSlot.Items.Count.ToString() : string.Empty;
+		else
+			hoverObject.transform.GetChild(0).GetComponent<Text>().text = sourceSlot.Items.Count > 1 ? sourceSlot.Items.Count.ToString() : string.Empty;
 	}
 
 	public void SetStackInfo(int maxStackCount) {
@@ -256,6 +294,7 @@ public class Inventory : MonoBehaviour {
 
 		for (int i = 0; i < count; i++) {
 			destinationSlot.AddItem(sourceSlot.RemoveItem());
+			hoverObject.transform.GetChild(0).GetComponent<Text>().text = movingSlot.Items.Count.ToString();
 		}
 
 		if (sourceSlot.Items.Count == 0) {
