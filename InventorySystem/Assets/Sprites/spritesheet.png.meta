@@ -1,12 +1,16 @@
 fileFormatVersion: 2
 guid: 036bb4e3671da894ebb858d8d42933cf
-timeCreated: 1440443775
+timeCreated: 1440488979
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: background
     21300002: slot_idle
     21300004: slot_active
+    21300006: arrow
+    21300008: ok
+    21300010: split_bg
+    21300012: split_num_bg
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -32,7 +36,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: 1
+    filterMode: 0
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -79,6 +83,46 @@ TextureImporter:
         y: 350
         width: 50
         height: 50
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: arrow
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 325
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ok
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 300
+        width: 50
+        height: 25
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: split_bg
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 299
+        width: 100
+        height: 50
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: split_num_bg
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 325
+        width: 50
+        height: 25
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}

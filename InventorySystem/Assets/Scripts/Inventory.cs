@@ -29,6 +29,27 @@ public class Inventory : MonoBehaviour {
 	private static Slot sourceSlot, destinationSlot;
 	public GameObject iconPrefab;
 	private static GameObject hoverObject;
+	private static GameObject clicked;
+
+	public GameObject selectStackSize;
+	public Text stackSplitText;
+
+	private int splitAmount;
+	private int maxStackCount;
+	private static Slot movingSlot;
+
+	private static Inventory instance;
+
+	public static Inventory Instance {
+		get { 
+			if (instance == null) {
+				instance = GameObject.FindObjectOfType<Inventory>();
+			}
+			return Inventory.instance; 
+		}
+	}
+
+	private bool shown = true;
 
 	void Start () {
 		CreateLayout();
@@ -42,7 +63,8 @@ public class Inventory : MonoBehaviour {
 				Destroy(GameObject.Find("Hover"));
 				destinationSlot = null;
 				sourceSlot = null;
-				hoverObject = null;
+				Destroy (GameObject.Find ("Hover"));
+				emptySlots += 1;
 			}
 		}
 
@@ -51,6 +73,18 @@ public class Inventory : MonoBehaviour {
 
 			RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, new Vector3(Input.mousePosition.x, Input.mousePosition.y - 1, Input.mousePosition.z), canvas.worldCamera, out position);
 			hoverObject.transform.position = canvas.transform.TransformPoint(position);
+		}
+
+		if (Input.GetKeyDown(KeyCode.I)) {
+			if (shown) {
+				Hide ();
+				if (GameObject.Find("Hover")) {
+					sourceSlot.GetComponent<Image>().color = Color.white;
+					sourceSlot = null;
+					destinationSlot = null;
+					Destroy (GameObject.Find ("Hover"));
+				}
+			} else Show ();
 		}
 	}
 
@@ -126,24 +160,24 @@ public class Inventory : MonoBehaviour {
 	}
 
 	public void MoveItem(GameObject clicked) {
-		if (sourceSlot == null) {
+		Inventory.clicked = clicked;
+
+		if (!movingSlot.IsEmpty) {
+			Slot tempSlot = clicked.GetComponent<Slot>();
+
+			if (tempSlot.IsEmpty) {
+				tempSlot.AddItems(movingSlot.Items);
+				movingSlot.ClearSlot();
+				Destroy (GameObject.Find("Hover"));
+			} else if (tempSlot.IsEmpty && movingSlot.CurrentItem.type == tempSlot.CurrentItem.type && tempSlot.IsAvailableForStacking) {
+				MergeStacks(movingSlot, tempSlot);
+			}
+		} else if (sourceSlot == null && !Input.GetKey(KeyCode.LeftShift)) {
 			if (!clicked.GetComponent<Slot>().IsEmpty) {
 				sourceSlot = clicked.GetComponent<Slot>();
 				sourceSlot.GetComponent<Image>().color = Color.gray;
 
-				hoverObject = Instantiate(iconPrefab) as GameObject;
-				hoverObject.GetComponent<Image>().sprite = clicked.GetComponent<Image>().sprite;
-				hoverObject.name = "Hover";
-
-				RectTransform hoverTransform = hoverObject.GetComponent<RectTransform>();
-				RectTransform clickedTransform = clicked.GetComponent<RectTransform>();
-
-				hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clickedTransform.sizeDelta.x);
-				hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clickedTransform.sizeDelta.y);
-
-				//hoverObject.transform.SetParent(GameObject.Find("Canvas").transform, true);
-				hoverObject.transform.SetParent(GameObject.Find("Inventory").transform, false);
-				hoverObject.transform.localScale = sourceSlot.gameObject.transform.localScale;
+				CreateHoverIcon();
 			}
 		} else if (destinationSlot == null) {
 			destinationSlot = clicked.GetComponent<Slot>();
@@ -165,7 +199,90 @@ public class Inventory : MonoBehaviour {
 			sourceSlot.GetComponent<Image>().color = Color.white;
 			sourceSlot = null;
 			destinationSlot = null;
-			hoverObject = null;
+			Destroy (GameObject.Find ("Hover"));
+		}
+	}
+
+	private void CreateHoverIcon(){
+		hoverObject = Instantiate(iconPrefab) as GameObject;
+		hoverObject.GetComponent<Image>().sprite = clicked.GetComponent<Image>().sprite;
+		hoverObject.name = "Hover";
+		
+		RectTransform hoverTransform = hoverObject.GetComponent<RectTransform>();
+		RectTransform clickedTransform = Inventory.clicked.GetComponent<RectTransform>();
+		
+		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clickedTransform.sizeDelta.x);
+		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clickedTransform.sizeDelta.y);
+		
+		//hoverObject.transform.SetParent(GameObject.Find("Canvas").transform, true);
+		hoverObject.transform.SetParent(GameObject.Find("Inventory").transform, false);
+		hoverObject.transform.localScale = sourceSlot.gameObject.transform.localScale;
+	}
+
+	public void SetStackInfo(int maxStackCount) {
+		selectStackSize.SetActive(true);
+		splitAmount = 0;
+		this.maxStackCount = maxStackCount;
+		stackSplitText.text = splitAmount.ToString();
+	}
+
+	public void ChangeStackText(int i) {
+		splitAmount += i;
+
+		if (splitAmount < 0) {
+			splitAmount = 0;
+		}
+		if (splitAmount > maxStackCount) {
+			splitAmount = maxStackCount;
+		}
+
+		stackSplitText.text = splitAmount.ToString();
+	}
+
+	public void SplitStack() {
+		selectStackSize.SetActive(false);
+
+		if (splitAmount == maxStackCount) {
+			MoveItem(clicked);
+		} else if (splitAmount > 0) {
+			movingSlot.Items = clicked.GetComponent<Slot>().RemoveItems(splitAmount);
+			CreateHoverIcon();
+		}
+	}
+
+	public void MergeStacks(Slot sourceSlot, Slot destinationSlot) {
+		int max = destinationSlot.CurrentItem.maxStack - destinationSlot.Items.Count;
+		int count = sourceSlot.Items.Count < max ? sourceSlot.Items.Count : max;
+
+		for (int i = 0; i < count; i++) {
+			destinationSlot.AddItem(sourceSlot.RemoveItem());
+		}
+
+		if (sourceSlot.Items.Count == 0) {
+			sourceSlot.ClearSlot();
+			Destroy(GameObject.Find("Hover"));
+		}
+	}
+	
+	private void Hide() {
+		if (shown) {
+			shown = false;
+			gameObject.GetComponent<RectTransform>().position = new Vector3(
+				gameObject.GetComponent<RectTransform>().position.x + 1000f,
+				gameObject.GetComponent<RectTransform>().position.y,
+				gameObject.GetComponent<RectTransform>().position.z);
+			//gameObject.GetComponent<RectTransform>().position.x += inventoryWidth;
+		}
+	}
+
+	private void Show() {
+		if (!shown) {
+			shown = true;
+			gameObject.GetComponent<RectTransform>().position = new Vector3(
+				gameObject.GetComponent<RectTransform>().position.x - 1000f,
+				gameObject.GetComponent<RectTransform>().position.y,
+				gameObject.GetComponent<RectTransform>().position.z);
+			//gameObject.GetComponent<RectTransform>().position.x -= inventoryWidth;
 		}
 	}
 }
