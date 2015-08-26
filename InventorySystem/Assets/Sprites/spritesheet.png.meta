@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 036bb4e3671da894ebb858d8d42933cf
-timeCreated: 1440488979
+timeCreated: 1440625345
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -11,6 +11,7 @@ TextureImporter:
     21300008: ok
     21300010: split_bg
     21300012: split_num_bg
+    21300014: tooltip_bg
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -126,6 +127,16 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tooltip_bg
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 351
+        width: 49
+        height: 48
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 1, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 

@@ -31,12 +31,20 @@ public class Inventory : MonoBehaviour {
 	private static GameObject hoverObject;
 	private static GameObject clicked;
 
+	private static GameObject selectStackSizeObject;
 	public GameObject selectStackSize;
 	public Text stackSplitText;
 
 	private int splitAmount;
 	private int maxStackCount;
 	private static Slot movingSlot;
+
+	public GameObject TooltipObject;
+	private static GameObject tooltip;
+	public Text sizeTextObject;
+	private static Text sizeText;
+	public Text visualTextObject;
+	private static Text visualText;
 
 	private static Inventory instance;
 
@@ -52,6 +60,10 @@ public class Inventory : MonoBehaviour {
 	private bool shown = true;
 
 	void Start () {
+		tooltip = TooltipObject;
+		sizeText = sizeTextObject;
+		visualText = visualTextObject;
+		selectStackSizeObject = selectStackSize;
 		CreateLayout();
 
 		movingSlot = GameObject.Find("MovingSlot").GetComponent<Slot>();
@@ -83,6 +95,7 @@ public class Inventory : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.I)) {
 			if (shown) {
+				tooltip.SetActive(false);
 				Hide ();
 				if (GameObject.Find("Hover")) {
 					PutItemBack();
@@ -93,6 +106,26 @@ public class Inventory : MonoBehaviour {
 				}
 			} else Show ();
 		}
+	}
+
+	public void ShowTooltip(GameObject slot) {
+		Slot tempSlot = slot.GetComponent<Slot>();
+
+		if (!tempSlot.IsEmpty && hoverObject == null && !selectStackSizeObject.activeSelf) {
+			visualText.text = tempSlot.CurrentItem.GetTooltip();
+			sizeText.text = visualText.text;
+
+			tooltip.SetActive(true);
+
+			float xPos = slot.transform.position.x + slotPaddingLeft;
+			float yPos = slot.transform.position.y - slot.GetComponent<RectTransform>().sizeDelta.y - slotPaddingTop;
+
+			tooltip.transform.position = new Vector2(xPos, yPos);
+		}
+	}
+
+	public void HideTooltip() {
+		tooltip.SetActive(false);
 	}
 
 	private void CreateLayout() {
@@ -259,6 +292,7 @@ public class Inventory : MonoBehaviour {
 
 	public void SetStackInfo(int maxStackCount) {
 		selectStackSize.SetActive(true);
+		tooltip.SetActive(false);
 		splitAmount = 0;
 		this.maxStackCount = maxStackCount;
 		stackSplitText.text = splitAmount.ToString();
