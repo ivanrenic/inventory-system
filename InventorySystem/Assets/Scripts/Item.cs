@@ -78,4 +78,19 @@ public class Item : MonoBehaviour {
 
 		return string.Format("<color=" + color + "><size=16>{0}</size></color><size=14><i><color=lime>" + newLine + "{1}</color></i>{2}</size>", itemName, itemDescription, stats);
 	}
+
+	public void SetStats(Item item) {
+		this.type = item.type;
+		this.quality = item.quality;
+		this.spriteNeutral = item.spriteNeutral;
+		this.spriteHighlighted = item.spriteHighlighted;
+		this.maxStack = item.maxStack;
+		
+		this.strength = item.strength;
+		this.intellect = item.intellect;
+		this.agility = item.agility;
+		this.stamina = item.stamina;
+		this.itemName = item.itemName;
+		this.itemDescription = item.itemDescription;
+	}
 }

@@ -46,6 +46,9 @@ public class Inventory : MonoBehaviour {
 	public Text visualTextObject;
 	private static Text visualText;
 
+	public GameObject dropItemPrefab;
+	private static GameObject playerRef;
+
 	private static Inventory instance;
 
 	public static Inventory Instance {
@@ -66,6 +69,8 @@ public class Inventory : MonoBehaviour {
 		selectStackSizeObject = selectStackSize;
 		CreateLayout();
 
+		playerRef = GameObject.Find("Player");
+
 		movingSlot = GameObject.Find("MovingSlot").GetComponent<Slot>();
 	}
 
@@ -73,6 +78,20 @@ public class Inventory : MonoBehaviour {
 		if (Input.GetMouseButtonUp(0)) {
 			if (!eventSystem.IsPointerOverGameObject(-1) && sourceSlot != null) {
 				sourceSlot.GetComponent<Image>().color = Color.white;
+
+				// Dropping the items
+				/*foreach (var item in sourceSlot.Items) {
+					float angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2);
+
+					Vector3 v = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle), 0);
+
+					v *= 3;
+
+					GameObject droppedItem = Instantiate(dropItemPrefab, playerRef.transform.position - v, Quaternion.identity) as GameObject;
+					droppedItem.GetComponent<SpriteRenderer>().sprite = item.spriteNeutral;
+				}*/
+				DropItems(sourceSlot.Items);
+
 				sourceSlot.ClearSlot();
 				Destroy(GameObject.Find("Hover"));
 				//PutItemBack();
@@ -81,6 +100,18 @@ public class Inventory : MonoBehaviour {
 				Destroy (GameObject.Find ("Hover"));
 				emptySlots += 1;
 			} else if (!eventSystem.IsPointerOverGameObject(-1) && !movingSlot.IsEmpty) {
+				/*foreach (var item in movingSlot.Items) {
+					float angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2);
+					
+					Vector3 v = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle), 0);
+					
+					v *= 3;
+					
+					GameObject droppedItem = Instantiate(dropItemPrefab, playerRef.transform.position - v, Quaternion.identity) as GameObject;
+					droppedItem.GetComponent<SpriteRenderer>().sprite = item.spriteNeutral;
+				}*/
+				DropItems(movingSlot.Items);
+
 				movingSlot.ClearSlot();
 				Destroy (GameObject.Find("Hover"));
 			}
@@ -105,6 +136,20 @@ public class Inventory : MonoBehaviour {
 					Destroy (GameObject.Find ("Hover"));*/
 				}
 			} else Show ();
+		}
+	}
+
+	private void DropItems(Stack<Item> items) {
+		foreach (var item in items) {
+			float angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2);
+			
+			Vector3 v = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle), 0);
+			
+			v *= 3;
+			
+			GameObject droppedItem = Instantiate(dropItemPrefab, playerRef.transform.position - v, Quaternion.identity) as GameObject;
+			droppedItem.GetComponent<Item>().SetStats(item);
+			droppedItem.GetComponent<SpriteRenderer>().sprite = item.spriteNeutral;
 		}
 	}
 
