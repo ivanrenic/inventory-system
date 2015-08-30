@@ -1,45 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum ItemType {MANA, HEALTH};
+public enum ItemType {MANA, HEALTH, CONSUMEABLE, MAINHAND, TWOHAND, OFFHAND, HEAD, NECK, CHEST, RING, LEGS, BRACERS, BOOTS, TRINKET, SHOULDERS, BELT, GENERIC, GENERICWEAPON};
 public enum Quality {COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, ARTIFACT};
 
-public class Item : MonoBehaviour {
+public abstract class Item : MonoBehaviour {
 
-	public ItemType type;
-	public Quality quality;
-	public Sprite spriteNeutral;
-	public Sprite spriteHighlighted;
-	public int maxStack;
+	public ItemType Type;
+	public Quality Quality;
+	public Sprite SpriteNeutral;
+	public Sprite SpriteHighlighted;
+	public int MaxStack;
 
-	public float strength, intellect, agility, stamina;
-	public string itemName;
-	public string itemDescription;
+	public string ItemName;
+	public string ItemDescription;
 
-	public void Use() {
-		switch(type)
-		{
-			case ItemType.HEALTH:
-				Debug.Log ("Used a health potion!");
-				break;
-			case ItemType.MANA:
-				Debug.Log ("Used a mana potion!");
-				break;
-			default:
-				break;
-		}
-	}
+	public abstract void Use(Slot slot, ItemHolder item);
 
-	public string GetTooltip() {
+	public virtual string GetTooltip() {
 		string stats = string.Empty;
 		string color = string.Empty;
 		string newLine = string.Empty;
 
-		if (itemDescription != string.Empty) {
+		if (ItemDescription != string.Empty) {
 			newLine = "\n";
 		}
 
-		switch (quality) {
+		switch (Quality) {
 		case Quality.COMMON:
 			color = "black";
 			break;
@@ -60,37 +47,6 @@ public class Item : MonoBehaviour {
 			break;
 		}
 
-		if (strength > 0) {
-			stats += "\n+" + strength.ToString() + " Strength";
-		}
-
-		if (intellect > 0) {
-			stats += "\n+" + intellect.ToString() + " Intellect";
-		}
-
-		if (agility > 0) {
-			stats += "\n+" + agility.ToString() + " Agility";
-		}
-
-		if (stamina > 0) {
-			stats += "\n+" + stamina.ToString() + " Stamina";
-		}
-
-		return string.Format("<color=" + color + "><size=16>{0}</size></color><size=14><i><color=lime>" + newLine + "{1}</color></i>{2}</size>", itemName, itemDescription, stats);
-	}
-
-	public void SetStats(Item item) {
-		this.type = item.type;
-		this.quality = item.quality;
-		this.spriteNeutral = item.spriteNeutral;
-		this.spriteHighlighted = item.spriteHighlighted;
-		this.maxStack = item.maxStack;
-		
-		this.strength = item.strength;
-		this.intellect = item.intellect;
-		this.agility = item.agility;
-		this.stamina = item.stamina;
-		this.itemName = item.itemName;
-		this.itemDescription = item.itemDescription;
+		return string.Format("<color=" + color + "><size=16>{0}</size></color><size=14><i><color=lime>" + newLine + "{1}</color></i>\n{2}</size>", ItemName, ItemDescription, Type.ToString().ToLower());
 	}
 }

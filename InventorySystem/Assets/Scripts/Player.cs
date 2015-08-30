@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Movement : MonoBehaviour {
+public class Player : MonoBehaviour {
 
 	public float moveForce = 180f;			// Amount of force added to move the player left and right.
 	public float maxSpeed = 5f;				// The fastest the player can travel in the x axis.
 
 	public Inventory inventory;
+	public CharacterPanel characterPanel;
 
 	// Use this for initialization
 	void Start () {
@@ -15,7 +16,13 @@ public class Movement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (Input.GetKeyDown(KeyCode.R)) {
+			inventory.Toggle();
+		}
+
+		if (Input.GetKeyDown(KeyCode.E)) {
+			characterPanel.Toggle();
+		}
 	}
 
 	void FixedUpdate() {
@@ -47,8 +54,9 @@ public class Movement : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter2D(Collider2D other) {
-		if(other.tag == "Item") {
-			inventory.AddItem(other.GetComponent<Item>());
+		if(other.tag == "Item" || other.tag == "Dispenser") {
+			if (inventory.AddItem(other.GetComponent<ItemHolder>()) && other.tag == "Item")
+				Destroy(other.gameObject);
 		}
 	}
 }

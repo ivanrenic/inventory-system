@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Inventory : Panel {
+public class InventoryCopy : MonoBehaviour {
 
 	private RectTransform inventoryRect;
 	private float inventoryWidth, inventoryHeight;
@@ -12,49 +12,49 @@ public class Inventory : Panel {
 	public int columns;
 	public float slotPaddingLeft, slotPaddingTop;
 	public float slotSize;
-	//public GameObject slotPrefab;
+	public GameObject slotPrefab;
 	private int hoverOffset = 20;
 
 	private EventSystem m_eventSystem;
 	//private PanelManager PanelManager.Instance;
 
 	private List<GameObject> allSlots;
-	public int emptySlots;
+	private int emptySlots;
 
-	/*private Canvas canvas;
+	private Canvas canvas;
 
 	public Canvas Canvas {
 		get { return canvas; }
-	}*/
+	}
 
 	public int EmptySlots {
 		get { return emptySlots; }
 		set { emptySlots = value; }
 	}
 
-	//private static Slot sourceSlot, destinationSlot;
-	//public GameObject iconPrefab;
-	//private static GameObject hoverObject;
-	//private static GameObject clicked;
+	private static Slot sourceSlot, destinationSlot;
+	public GameObject iconPrefab;
+	private static GameObject hoverObject;
+	private static GameObject clicked;
 
-	//private static GameObject selectStackSizeObject;
-	//public GameObject selectStackSize;
-	//public Text stackSplitText;
+	private static GameObject selectStackSizeObject;
+	public GameObject selectStackSize;
+	public Text stackSplitText;
 
-	//private int splitAmount;
-	//private int maxStackCount;
-	//private static Slot movingSlot;
+	private int splitAmount;
+	private int maxStackCount;
+	private static Slot movingSlot;
 
 	private GameObject m_slotContainer;
 
-	//public GameObject TooltipObject;
-	//private static GameObject tooltip;
-	//public Text sizeTextObject;
-	//private static Text sizeText;
-	//public Text visualTextObject;
-	//private static Text visualText;
+	public GameObject TooltipObject;
+	private static GameObject tooltip;
+	public Text sizeTextObject;
+	private static Text sizeText;
+	public Text visualTextObject;
+	private static Text visualText;
 
-	//public GameObject dropItemPrefab;
+	public GameObject dropItemPrefab;
 	private static GameObject playerRef;
 
 	/*private static Inventory instance;
@@ -68,17 +68,17 @@ public class Inventory : Panel {
 		}
 	}*/
 
-	/*private bool shown = true;
+	private bool shown = true;
 
 	public bool Shown {
 		get { return shown; }
-	}*/
+	}
 
 	void Start () {
-		//tooltip = TooltipObject;
-		//sizeText = sizeTextObject;
-		//visualText = visualTextObject;
-		//selectStackSizeObject = selectStackSize;
+		tooltip = TooltipObject;
+		sizeText = sizeTextObject;
+		visualText = visualTextObject;
+		selectStackSizeObject = selectStackSize;
 		CreateLayout();
 
 		playerRef = GameObject.Find("Player");
@@ -91,14 +91,13 @@ public class Inventory : Panel {
 
 		GameObject eventSystemObject = GameObject.Find("EventSystem");
 		m_eventSystem = eventSystemObject.GetComponent<EventSystem>();
-		//GameObject canvasObject = GameObject.Find("Canvas");
-		//canvas = canvasObject.GetComponent<Canvas>();
+		GameObject canvasObject = GameObject.Find("Canvas");
+		canvas = canvasObject.GetComponent<Canvas>();
 
 		//m_panel = PanelManager.Instance;
 	}
 
 	void Update () {
-		Debug.Log("empty slots: " + emptySlots.ToString());
 		if (Input.GetKeyUp(KeyCode.Return)) {
 			SetSlots(slots + 5);
 		}
@@ -122,8 +121,7 @@ public class Inventory : Panel {
 					GameObject droppedItem = Instantiate(dropItemPrefab, playerRef.transform.position - v, Quaternion.identity) as GameObject;
 					droppedItem.GetComponent<SpriteRenderer>().sprite = item.spriteNeutral;
 				}*/
-				//DropItems(PanelManager.Instance.Source.Items);
-				PanelManager.Instance.Source.DropItems();
+				DropItems(PanelManager.Instance.Source.Items);
 
 				PanelManager.Instance.Source.ClearSlot();
 				Destroy(GameObject.Find("Hover"));
@@ -142,8 +140,7 @@ public class Inventory : Panel {
 					GameObject droppedItem = Instantiate(dropItemPrefab, playerRef.transform.position - v, Quaternion.identity) as GameObject;
 					droppedItem.GetComponent<SpriteRenderer>().sprite = item.spriteNeutral;
 				}*/
-				//DropItems(PanelManager.Instance.MovingSlot.Items);
-				PanelManager.Instance.MovingSlot.DropItems();
+				DropItems(PanelManager.Instance.MovingSlot.Items);
 
 				PanelManager.Instance.MovingSlot.ClearSlot();
 				Destroy (GameObject.Find("Hover"));
@@ -165,7 +162,7 @@ public class Inventory : Panel {
 		}
 	}
 
-	/*private void DropItems(Stack<ItemHolder> items) {
+	private void DropItems(Stack<ItemHolder> items) {
 		foreach (var item in items) {
 			float angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2);
 			
@@ -179,12 +176,12 @@ public class Inventory : Panel {
 			droppedItem.GetComponent<ItemHolder>().Item = item.Item;
 			droppedItem.GetComponent<SpriteRenderer>().sprite = item.Item.SpriteNeutral;
 		}
-	}*/
+	}
 
-	/*public void ShowTooltip(GameObject slot) {
+	public void ShowTooltip(GameObject slot) {
 		Slot tempSlot = slot.GetComponent<Slot>();
 
-		if (!tempSlot.IsEmpty && PanelManager.Instance.HoverObject == null && !PanelManager.Instance.selectStackSize.transform.gameObject.activeSelf) {
+		if (!tempSlot.IsEmpty && PanelManager.Instance.HoverObject == null && !PanelManager.Instance.selectStackSize.transform.parent.gameObject.activeSelf) {
 			PanelManager.Instance.visualTextObject.text = tempSlot.CurrentItem.GetTooltip();
 			PanelManager.Instance.sizeTextObject.text = PanelManager.Instance.visualTextObject.text;
 
@@ -195,11 +192,11 @@ public class Inventory : Panel {
 
 			PanelManager.Instance.tooltipObject.transform.position = new Vector2(xPos, yPos);
 		}
-	}*/
+	}
 
-	/*public void HideTooltip() {
+	public void HideTooltip() {
 		PanelManager.Instance.tooltipObject.SetActive(false);
-	}*/
+	}
 
 	public virtual void CreateLayout() {
 		allSlots = new List<GameObject>();
@@ -292,26 +289,24 @@ public class Inventory : Panel {
 	}
 
 	private void RemoveSlots(int slotsToRemove) {
-		//Stack<ItemHolder> itemsToRemove = new Stack<ItemHolder>();
+		Stack<ItemHolder> itemsToRemove = new Stack<ItemHolder>();
 
 		for (int i = slots-1; i > slots - slotsToRemove - 1; i--) {
 			GameObject tempSlotObject = allSlots[i];
 			Slot tempSlot = allSlots[i].GetComponent<Slot>();
-			tempSlot.DropItems();
-			/*if (!tempSlot.IsEmpty) {
+			if (!tempSlot.IsEmpty) {
 				int count = tempSlot.Items.Count;
 				for (int j = 0; j < count; j++) {
 					itemsToRemove.Push(tempSlot.Items.Pop());	
 				}
-			}*/
+			}
 
 			allSlots.RemoveAt(i);
 			DestroyObject(tempSlotObject);
-			if (emptySlots > 0)
-				emptySlots--;
+			emptySlots--;
 		}
 
-		//DropItems(itemsToRemove);
+		DropItems(itemsToRemove);
 	}
 
 	private void RepositionSlots() {
@@ -358,9 +353,6 @@ public class Inventory : Panel {
 
 				if (slotScript.IsEmpty) {
 					slotScript.AddItem(item);
-					if (item.Item.Type != ItemType.CONSUMEABLE || item.Item.Type != ItemType.HEALTH && CharacterPanel.Instance.CanEquip(item)) {
-						item.Use(slotScript);
-					}
 					emptySlots -= 1;
 					return true;
 				}
@@ -370,7 +362,7 @@ public class Inventory : Panel {
 		return false;
 	}
 
-	/*private void PutItemBack() {
+	private void PutItemBack() {
 		if (PanelManager.Instance.Source != null) {
 			Destroy(GameObject.Find("Hover"));
 			PanelManager.Instance.Source.GetComponent<Image>().color = Color.white;
@@ -386,13 +378,14 @@ public class Inventory : Panel {
 
 		PanelManager.Instance.selectStackSize.SetActive(false);
 		//selectStackSize.SetActive(false);
-	}*/
+	}
 
 	public void MoveItem(GameObject clicked) {
 		PanelManager.Instance.Clicked = clicked;
-		Slot tempSlot = clicked.GetComponent<Slot>();
 
 		if (!PanelManager.Instance.MovingSlot.IsEmpty) {
+			Slot tempSlot = clicked.GetComponent<Slot>();
+
 			if (tempSlot.IsEmpty) {
 				tempSlot.AddItems(PanelManager.Instance.MovingSlot.Items);
 				PanelManager.Instance.MovingSlot.Items.Clear();
@@ -400,22 +393,15 @@ public class Inventory : Panel {
 			} else if (!tempSlot.IsEmpty && PanelManager.Instance.MovingSlot.CurrentItem.Item.Type == tempSlot.CurrentItem.Item.Type && tempSlot.IsAvailableForStacking) {
 				MergeStacks(PanelManager.Instance.MovingSlot, tempSlot);
 			}
-		} else if (PanelManager.Instance.Source == null && Input.GetKey(KeyCode.LeftAlt)) {
-			if (!tempSlot.IsEmpty && !GameObject.Find("Hover")) {
-				tempSlot.DropItems();
-				tempSlot.ClearSlot();
-				if (PanelManager.Instance.Source.type == SlotType.INVENTORY)
-					GameObject.Find("Inventory").GetComponent<Inventory>().emptySlots += 1;
-			}
-		} else if (PanelManager.Instance.Source == null && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftAlt)) {
-			if (!tempSlot.IsEmpty && !GameObject.Find("Hover")) {
+		} else if (PanelManager.Instance.Source == null && !Input.GetKey(KeyCode.LeftShift)) {
+			if (!clicked.GetComponent<Slot>().IsEmpty && !GameObject.Find("Hover")) {
 				PanelManager.Instance.Source = clicked.GetComponent<Slot>();
 				PanelManager.Instance.Source.GetComponent<Image>().color = Color.gray;
 
 				CreateHoverIcon();
 			}
-		} else if (PanelManager.Instance.Destination == null && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftAlt)) {
-			PanelManager.Instance.Destination = tempSlot;
+		} else if (PanelManager.Instance.Destination == null && !Input.GetKey(KeyCode.LeftShift)) {
+			PanelManager.Instance.Destination = clicked.GetComponent<Slot>();
 			Destroy (GameObject.Find ("Hover"));
 		}
 
@@ -444,7 +430,7 @@ public class Inventory : Panel {
 		}
 	}
 
-	/*private void CreateHoverIcon(){
+	private void CreateHoverIcon(){
 		PanelManager.Instance.HoverObject = Instantiate(PanelManager.Instance.iconPrefab) as GameObject;
 		PanelManager.Instance.HoverObject.GetComponent<Image>().sprite = PanelManager.Instance.Clicked.GetComponent<Image>().sprite;
 		PanelManager.Instance.HoverObject.name = "Hover";
@@ -459,18 +445,24 @@ public class Inventory : Panel {
 		PanelManager.Instance.HoverObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
 		PanelManager.Instance.HoverObject.transform.localScale = PanelManager.Instance.Clicked.gameObject.transform.localScale;
 
-		if (PanelManager.Instance.Source == null || PanelManager.Instance.Source.IsEmpty)
+		if (sourceSlot == null || PanelManager.Instance.Source.IsEmpty)
 			PanelManager.Instance.HoverObject.transform.GetChild(0).GetComponent<Text>().text = PanelManager.Instance.MovingSlot.Items.Count > 1 ? PanelManager.Instance.MovingSlot.Items.Count.ToString() : string.Empty;
 		else
 			PanelManager.Instance.HoverObject.transform.GetChild(0).GetComponent<Text>().text = PanelManager.Instance.Source.Items.Count > 1 ? PanelManager.Instance.Source.Items.Count.ToString() : string.Empty;
-	}*/
+	}
 
-	/*public void SetStackInfo(int maxStackCount) {
+	public void SetStackInfo(int maxStackCount) {
 		PanelManager.Instance.selectStackSize.SetActive(true);
 		PanelManager.Instance.tooltipObject.SetActive(false);
 		PanelManager.Instance.SplitAmount = 0;
 		PanelManager.Instance.MaxStackCount = maxStackCount;
 		PanelManager.Instance.stackText.text = PanelManager.Instance.SplitAmount.ToString();
+
+		/*selectStackSize.SetActive(true);
+		tooltip.SetActive(false);
+		splitAmount = 0;
+		this.maxStackCount = maxStackCount;
+		stackSplitText.text = splitAmount.ToString();*/
 	}
 
 	public void ChangeStackText(int i) {
@@ -485,7 +477,7 @@ public class Inventory : Panel {
 
 		PanelManager.Instance.stackText.text = PanelManager.Instance.SplitAmount.ToString();
 		//stackSplitText.text = splitAmount.ToString();
-	}*/
+	}
 
 	public void SplitStack() {
 		PanelManager.Instance.selectStackSize.SetActive(false);
@@ -497,10 +489,6 @@ public class Inventory : Panel {
 			PanelManager.Instance.MovingSlot.Items = PanelManager.Instance.Clicked.GetComponent<Slot>().RemoveItems(PanelManager.Instance.SplitAmount);
 			CreateHoverIcon();
 		}
-	}
-
-	public void HideSplitScreen() {
-		PanelManager.Instance.selectStackSize.SetActive(false);
 	}
 
 	public void MergeStacks(Slot sourceSlot, Slot destinationSlot) {
@@ -518,7 +506,7 @@ public class Inventory : Panel {
 		}
 	}
 
-	public override void Toggle() {
+	public void Toggle() {
 		if (shown) {
 			shown = false;
 			gameObject.GetComponent<RectTransform>().position = new Vector3(
@@ -526,7 +514,7 @@ public class Inventory : Panel {
 				gameObject.GetComponent<RectTransform>().position.y,
 				gameObject.GetComponent<RectTransform>().position.z);
 
-			if (GameObject.Find("Hover") && !GameObject.Find("Inventory").GetComponent<Inventory>().Shown && PanelManager.Instance.Source != null && PanelManager.Instance.Source.type == SlotType.INVENTORY) {
+			if (GameObject.Find("Hover") && !GameObject.Find("Inventory").GetComponent<Inventory>().Shown) {
 				PutItemBack();
 			}
 		} else {
@@ -538,7 +526,7 @@ public class Inventory : Panel {
 		}
 	}
 	
-	/*private void Hide() {
+	private void Hide() {
 		if (shown) {
 			shown = false;
 			gameObject.GetComponent<RectTransform>().position = new Vector3(
@@ -558,5 +546,5 @@ public class Inventory : Panel {
 				gameObject.GetComponent<RectTransform>().position.z);
 			//gameObject.GetComponent<RectTransform>().position.x -= inventoryWidth;
 		}
-	}*/
+	}
 }
