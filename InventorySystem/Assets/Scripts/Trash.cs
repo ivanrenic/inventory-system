@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//public enum TrashType {ALUMINIJ, PLASTIKA, BATERIJA};
-
 public class Trash : Item {
-	//public TrashType TrashType;
 	public int Speed;
 	public int Radius;
 
@@ -19,20 +16,10 @@ public class Trash : Item {
 			itemHolder.Item = gameObject.GetComponent<Trash>();
 	}
 
-	/*public void Glow() {
-		gameObject.GetComponent<SpriteRenderer>().sprite = SpriteDropPickupable;
-	}
-
-	public void Unglow() {
-		gameObject.GetComponent<SpriteRenderer>().sprite = SpriteDrop;
-	}*/
-
 	public override string GetTooltip() {
-		string stats = string.Empty;  //Resets the stats info
-		string color = string.Empty;  //Resets the color info
-		string newLine = string.Empty; //Resets the new line
+		string newLine = string.Empty;
 		
-		if (ItemDescription != string.Empty) //Creates a newline if the item has a description, this is done to makes sure that the headline and the describion isn't on the same line
+		if (ItemDescription != string.Empty)
 		{
 			newLine = "\n";
 		}

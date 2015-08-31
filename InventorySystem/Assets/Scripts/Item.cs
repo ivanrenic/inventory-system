@@ -18,8 +18,6 @@ public abstract class Item : MonoBehaviour {
 	public abstract void Use(Slot slot, ItemHolder item);
 
 	public virtual string GetTooltip() {
-		string stats = string.Empty;
-		string color = string.Empty;
 		string newLine = string.Empty;
 
 		if (ItemDescription != string.Empty) {

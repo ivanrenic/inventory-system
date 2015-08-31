@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 036bb4e3671da894ebb858d8d42933cf
-timeCreated: 1440982160
+timeCreated: 1441000769
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -19,6 +19,9 @@ TextureImporter:
     21300024: handle_active
     21300026: splitscreen_bg
     21300028: pickup_radius
+    21300030: toggleButton_idle
+    21300032: toggleButton_hover
+    21300034: toggleButton_active
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -211,6 +214,36 @@ TextureImporter:
         y: 301
         width: 99
         height: 43
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: toggleButton_idle
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 263
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: toggleButton_hover
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 263
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: toggleButton_active
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 263
+        width: 25
+        height: 25
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}

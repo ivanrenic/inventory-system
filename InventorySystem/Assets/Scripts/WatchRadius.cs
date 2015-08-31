@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class WatchRadius : MonoBehaviour {
-	private PolygonCollider2D collider;
+	//private PolygonCollider2D radiusCollider;
 
 	// Use this for initialization
 	void Start () {

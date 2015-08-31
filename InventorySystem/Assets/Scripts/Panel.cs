@@ -4,27 +4,11 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public abstract class Panel : MonoBehaviour {
-	//protected GameObject playerRef;
 	protected bool shown = true;
 	
 	public bool Shown {
 		get { return shown; }
 	}
-
-	/*protected void DropItems(Stack<ItemHolder> items) {
-		foreach (var item in items) {
-			float angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2);
-			
-			Vector3 v = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle), 0);
-			
-			v *= 3;
-			
-			GameObject droppedItem = Instantiate(PanelManager.Instance.dropItem, playerRef.transform.position - v, Quaternion.identity) as GameObject;
-			droppedItem.AddComponent<ItemHolder>();
-			droppedItem.GetComponent<ItemHolder>().Item = item.Item;
-			droppedItem.GetComponent<SpriteRenderer>().sprite = item.Item.SpriteNeutral;
-		}
-	}*/
 
 	protected void PutItemBack() {
 		if (PanelManager.Instance.Source != null) {
@@ -41,7 +25,6 @@ public abstract class Panel : MonoBehaviour {
 		}
 		
 		PanelManager.Instance.selectStackSize.SetActive(false);
-		//selectStackSize.SetActive(false);
 	}
 
 	public void ShowTooltip(GameObject slot) {
@@ -70,16 +53,13 @@ public abstract class Panel : MonoBehaviour {
 		PanelManager.Instance.HoverObject.name = "Hover";
 		
 		RectTransform hoverTransform = PanelManager.Instance.HoverObject.GetComponent<RectTransform>();
-		RectTransform clickedTransform = PanelManager.Instance.Clicked.GetComponent<RectTransform>();
 
 		float slotSize = GameObject.Find("Inventory").GetComponent<Inventory>().GetSlotSize();
 		
 		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotSize * GameObject.Find("Inventory").GetComponent<RectTransform>().localScale.x);
 		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotSize * GameObject.Find("Inventory").GetComponent<RectTransform>().localScale.y);
-		
-		//hoverObject.transform.SetParent(GameObject.Find("Canvas").transform, true);
+
 		PanelManager.Instance.HoverObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
-		//PanelManager.Instance.HoverObject.transform.localScale = GameObject.Find("Inventory").GetComponent<Inventory>().GetSlotSize();
 		PanelManager.Instance.HoverObject.transform.localScale = PanelManager.Instance.Clicked.gameObject.transform.localScale;
 		
 		if (PanelManager.Instance.Source == null || PanelManager.Instance.Source.IsEmpty)
@@ -94,12 +74,7 @@ public abstract class Panel : MonoBehaviour {
 		PanelManager.Instance.SplitAmount = 0;
 		PanelManager.Instance.MaxStackCount = maxStackCount;
 		PanelManager.Instance.stackText.text = PanelManager.Instance.SplitAmount.ToString();
-		
-		/*selectStackSize.SetActive(true);
-		tooltip.SetActive(false);
-		splitAmount = 0;
-		this.maxStackCount = maxStackCount;
-		stackSplitText.text = splitAmount.ToString();*/
+
 	}
 	
 	public void ChangeStackText(int i) {
@@ -113,7 +88,6 @@ public abstract class Panel : MonoBehaviour {
 		}
 		
 		PanelManager.Instance.stackText.text = PanelManager.Instance.SplitAmount.ToString();
-		//stackSplitText.text = splitAmount.ToString();
 	}
 
 	public abstract void Toggle();

@@ -37,7 +37,6 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 		set { items = value; }
 	}
 
-	// Use this for initialization
 	void Start () {
 		items = new Stack<ItemHolder>();
 		RectTransform slotRect = GetComponent<RectTransform>();
@@ -49,11 +48,6 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 
 		textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotRect.sizeDelta.x);
 		textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotRect.sizeDelta.y);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 
 	public void AddItem(ItemHolder item) {
@@ -90,14 +84,10 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 			items.Peek().Use(this);
 
 			UpdateStackText();
-			//stackText.text = items.Count > 1 ? items.Count.ToString() : string.Empty;
 
 			if (IsEmpty) {
 				ChangeSprite(slotEmpty, slotHighlight);
 				PanelManager.Instance.tooltipObject.SetActive(false);
-
-				//transform.parent.parent.GetComponent<Inventory>().EmptySlots++;
-				//Inventory.EmptySlots++;
 			}
 		}
 	}
@@ -124,7 +114,6 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 			
 			GameObject droppedItem = Instantiate(PanelManager.Instance.dropItem, PanelManager.Instance.Player.transform.position - v, Quaternion.identity) as GameObject;
 			droppedItem.transform.localScale.Set(2, 2, 1);
-			//droppedItem.AddComponent<ItemHolder>();
 			droppedItem.GetComponent<ItemHolder>().Item = item.Item;
 			droppedItem.GetComponent<SpriteRenderer>().sprite = item.Item.SpriteDrop;
 			droppedItem.GetComponent<Item>().SpriteDrop = item.Item.SpriteDrop;
@@ -177,7 +166,6 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 						GameObject.Find("Inventory").GetComponent<Inventory>().EmptySlots--;
 					else if (source.type == SlotType.INVENTORY && destination.type == SlotType.CHARACTER)
 						GameObject.Find("Inventory").GetComponent<Inventory>().EmptySlots++;
-					//destination.transform.parent.parent.GetComponent<Inventory>().EmptySlots--;
 					source.ClearSlot();
 				} else {
 					source.AddItems(tempDestination);
@@ -188,17 +176,6 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 				CharacterPanel.Instance.CalculateStats();
 			}
 		}
-
-		/*Stack<ItemHolder> temp = new Stack<ItemHolder>(destination.Items);
-
-		destination.AddItems(source.Items);
-
-		if (temp.Count == 0) {
-			//destination.transform.parent.GetComponent
-			source.ClearSlot();
-		} else {
-			source.AddItems(temp);
-		}*/
 	}
 
 	public void OnPointerClick(PointerEventData eventData) {

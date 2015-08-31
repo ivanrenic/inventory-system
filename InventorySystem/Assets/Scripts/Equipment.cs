@@ -6,20 +6,10 @@ public class Equipment : Item {
 	public int Speed;
 
 	public int Radius;
-	
-	/*private RuntimeAnimatorController animator;
-
-	public RuntimeAnimatorController Animator {
-		get { return animator; }
-	}*/
-
-	void Awake() {
-		//animator = gameObject.GetComponent<Animator>().runtimeAnimatorController;
-	}
 
 	public override void Use(Slot slot, ItemHolder item) {
 		if (slot.type == SlotType.INVENTORY)
-			CharacterPanel.Instance.EquipItem(slot, item, Equip);//, animator);
+			CharacterPanel.Instance.EquipItem(slot, item, Equip);
 		else if (slot.type == SlotType.CHARACTER)
 			CharacterPanel.Instance.UnequipItem(slot, item);
 	}

@@ -28,43 +28,28 @@ public class CharacterPanel : Panel {
 	private Sprite defaultBoots;
 
 	void Awake() {
-		//playerRef = GameObject.Find("Player");
 		equipmentSlots = transform.GetComponentsInChildren<Slot>();
 		defaultShirt = ShirtSprite.sprite;
 		defaultPants = PantsSprite.sprite;
 		defaultBoots = BootsSprite.sprite;
 	}
 
-	public void EquipItem(Slot slot, ItemHolder item, Sprite equipSprite) {//, RuntimeAnimatorController animator) {
-		//AnimatorStateInfo currentState;
-		//Player playerScript = Player.GetComponent<Player>();
+	public void EquipItem(Slot slot, ItemHolder item, Sprite equipSprite) {
 		Slot.SwapItems(slot, Array.Find (equipmentSlots, x => x.canContain == item.Item.Type));
 
 		switch (item.Item.Type) {
 		case ItemType.CIPELE:
 			BootsSprite.sprite = equipSprite;
-			/*currentState = playerScript.bootsAnimator.GetCurrentAnimatorStateInfo(-5);
-			playerScript.bootsAnimator.runtimeAnimatorController = animator;
-			playerScript.bootsAnimator.Play(playerScript.CurrentAnimationState, -5, currentState.normalizedTime);*/
 			break;
 		case ItemType.HLACE:
 			PantsSprite.sprite = equipSprite;
-			/*currentState = playerScript.pantsAnimator.GetCurrentAnimatorStateInfo(-4);
-			playerScript.pantsAnimator.runtimeAnimatorController = animator;
-			playerScript.pantsAnimator.Play(playerScript.CurrentAnimationState, -4, currentState.normalizedTime);*/
 			break;
 		case ItemType.MAJICA:
 			ShirtSprite.sprite = equipSprite;
-			/*currentState = playerScript.shirtAnimator.GetCurrentAnimatorStateInfo(-3);
-			playerScript.shirtAnimator.runtimeAnimatorController = animator;
-			playerScript.shirtAnimator.Play(playerScript.CurrentAnimationState, -3, currentState.normalizedTime);*/
 			break;
 		case ItemType.KAPA:
 			HatSprite.sprite = equipSprite;
 			HatSprite.gameObject.SetActive(true);
-			/*currentState = playerScript.hatAnimator.GetCurrentAnimatorStateInfo(-2);
-			playerScript.hatAnimator.runtimeAnimatorController = animator;
-			playerScript.hatAnimator.Play(playerScript.CurrentAnimationState, -2, currentState.normalizedTime);*/
 			break;
 		default:
 			break;
@@ -101,6 +86,9 @@ public class CharacterPanel : Panel {
 	}
 
 	public bool CanEquip(ItemHolder item) {
+		if (item.Item.Type == ItemType.BRIEFCASE)
+			return true;
+
 		Slot tempSlot = Array.Find(equipmentSlots, x => x.canContain == item.Item.Type);
 		return tempSlot.IsEmpty;
 	}
@@ -134,9 +122,6 @@ public class CharacterPanel : Panel {
 			if (GameObject.Find("Hover") && PanelManager.Instance.Source != null && PanelManager.Instance.Source.type == SlotType.CHARACTER) {
 				PutItemBack();
 			}
-			/*if (GameObject.Find("Hover") && !GameObject.Find("Inventory").GetComponent<Inventory>().Shown) {
-				PutItemBack();
-			}*/
 		} else {
 			shown = true;
 			gameObject.GetComponent<RectTransform>().position = new Vector3(

@@ -11,7 +11,6 @@ public class PanelManager : MonoBehaviour {
 		get {
 			if (m_instance == null)
 				m_instance = FindObjectOfType<PanelManager>();
-				//m_instance = GameObject.FindObjectOfType<PanelManager>();
 
 			return m_instance;
 		}
@@ -20,7 +19,6 @@ public class PanelManager : MonoBehaviour {
 	public GameObject Player;
 	public GameObject slotPrefab;
 	public GameObject iconPrefab;
-	public GameObject itemObject;
 	private GameObject m_hoverObject;
 	public GameObject dropItem;
 	public GameObject tooltipObject;

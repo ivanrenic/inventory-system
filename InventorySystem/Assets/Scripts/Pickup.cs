@@ -11,8 +11,8 @@ public class Pickup : MonoBehaviour {
 
 	void OnMouseDown() {
 		if (Pickupable) {
-			GameObject.Find("Inventory").GetComponent<Inventory>().AddItem(gameObject.GetComponent<ItemHolder>());
-			Destroy(gameObject);
+			if (GameObject.Find("Inventory").GetComponent<Inventory>().AddItem(gameObject.GetComponent<ItemHolder>()))
+				Destroy(gameObject);
 		}
 	}
 }
