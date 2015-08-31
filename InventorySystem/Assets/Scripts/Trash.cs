@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Usable : Item {
+//public enum TrashType {ALUMINIJ, PLASTIKA, BATERIJA};
+
+public class Trash : Item {
+	//public TrashType TrashType;
 	public int Speed;
 	public int Radius;
 
@@ -13,8 +16,16 @@ public class Usable : Item {
 		ItemHolder itemHolder = gameObject.GetComponent<ItemHolder>();
 
 		if (itemHolder != null)
-			itemHolder.Item = gameObject.GetComponent<Usable>();
+			itemHolder.Item = gameObject.GetComponent<Trash>();
 	}
+
+	/*public void Glow() {
+		gameObject.GetComponent<SpriteRenderer>().sprite = SpriteDropPickupable;
+	}
+
+	public void Unglow() {
+		gameObject.GetComponent<SpriteRenderer>().sprite = SpriteDrop;
+	}*/
 
 	public override string GetTooltip() {
 		string stats = string.Empty;  //Resets the stats info
@@ -26,28 +37,6 @@ public class Usable : Item {
 			newLine = "\n";
 		}
 		
-		switch (Quality) //Sets the color accodring to the quality of the item
-		{
-		case Quality.COMMON:
-			color = "white";
-			break;
-		case Quality.UNCOMMON:
-			color = "lime";
-			break;
-		case Quality.RARE:
-			color = "navy";
-			break;
-		case Quality.EPIC:
-			color = "magenta";
-			break;
-		case Quality.LEGENDARY:
-			color = "orange";
-			break;
-		case Quality.ARTIFACT:
-			color = "red";
-			break;
-		}
-		
-		return string.Format("<color=" + color + "><size=16>{0}</size></color><size=14><i><color=lime>" + newLine + "{1}</color></i>\n{2}</size>", ItemName, ItemDescription, Type.ToString().ToLower());
+		return string.Format("<color=white><size=16><b>{0}</b></size></color><size=14><i><color=#940084ff>" + newLine + "{1}</color></i><color=white>\n{2}</color></size>", ItemName, ItemDescription, char.ToUpper(Type.ToString()[0]) + Type.ToString().Substring(1).ToLower());
 	}
 }

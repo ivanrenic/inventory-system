@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 036bb4e3671da894ebb858d8d42933cf
-timeCreated: 1440902573
+timeCreated: 1440982160
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -13,6 +13,12 @@ TextureImporter:
     21300012: split_num_bg
     21300014: tooltip_bg
     21300016: no
+    21300018: transparent
+    21300020: handle_idle
+    21300022: handle_hover
+    21300024: handle_active
+    21300026: splitscreen_bg
+    21300028: pickup_radius
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -145,6 +151,66 @@ TextureImporter:
         y: 300
         width: 50
         height: 25
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: transparent
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 365
+        width: 36
+        height: 35
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: handle_idle
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 240
+        width: 20
+        height: 40
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: handle_hover
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 240
+        width: 20
+        height: 40
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: handle_active
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 240
+        width: 20
+        height: 40
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: splitscreen_bg
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 350
+        width: 101
+        height: 50
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: pickup_radius
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 301
+        width: 99
+        height: 43
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}

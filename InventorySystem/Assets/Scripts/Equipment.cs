@@ -2,21 +2,24 @@
 using System.Collections;
 
 public class Equipment : Item {
-	private int speed;
+	public Sprite Equip;
+	public int Speed;
 
-	public int Speed {
-		get { return speed; }
-	}
+	public int Radius;
+	
+	/*private RuntimeAnimatorController animator;
 
-	private int radius;
+	public RuntimeAnimatorController Animator {
+		get { return animator; }
+	}*/
 
-	public int Radius {
-		get { return radius; }
+	void Awake() {
+		//animator = gameObject.GetComponent<Animator>().runtimeAnimatorController;
 	}
 
 	public override void Use(Slot slot, ItemHolder item) {
 		if (slot.type == SlotType.INVENTORY)
-			CharacterPanel.Instance.EquipItem(slot, item);
+			CharacterPanel.Instance.EquipItem(slot, item, Equip);//, animator);
 		else if (slot.type == SlotType.CHARACTER)
 			CharacterPanel.Instance.UnequipItem(slot, item);
 	}
@@ -26,14 +29,14 @@ public class Equipment : Item {
 		string stats = string.Empty;
 		
 		if (Speed > 0) {
-			stats += "\n+" + Speed.ToString() + " Speed";
+			stats += "\n+" + Speed.ToString() + " brzina";
 		}
 		if (Radius > 0) {
-			stats += "\n+" + Radius.ToString() + " Radius";
+			stats += "\n+" + Radius.ToString() + " radijus";
 		}
 
 		string itemTip = base.GetTooltip();
 
-		return string.Format("{0}" + "<size=14>{1}</size>", itemTip, stats);
+		return string.Format("{0}" + "<size=14><color=white>{1}</color></size>", itemTip, stats);
 	}
 }

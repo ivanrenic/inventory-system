@@ -94,6 +94,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 
 			if (IsEmpty) {
 				ChangeSprite(slotEmpty, slotHighlight);
+				PanelManager.Instance.tooltipObject.SetActive(false);
 
 				//transform.parent.parent.GetComponent<Inventory>().EmptySlots++;
 				//Inventory.EmptySlots++;
@@ -122,9 +123,14 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 			v *= 3;
 			
 			GameObject droppedItem = Instantiate(PanelManager.Instance.dropItem, PanelManager.Instance.Player.transform.position - v, Quaternion.identity) as GameObject;
-			droppedItem.AddComponent<ItemHolder>();
+			droppedItem.transform.localScale.Set(2, 2, 1);
+			//droppedItem.AddComponent<ItemHolder>();
 			droppedItem.GetComponent<ItemHolder>().Item = item.Item;
-			droppedItem.GetComponent<SpriteRenderer>().sprite = item.Item.SpriteNeutral;
+			droppedItem.GetComponent<SpriteRenderer>().sprite = item.Item.SpriteDrop;
+			droppedItem.GetComponent<Item>().SpriteDrop = item.Item.SpriteDrop;
+			droppedItem.GetComponent<Item>().SpriteDropPickupable = item.Item.SpriteDropPickupable;
+			droppedItem.GetComponent<Item>().SpriteNeutral = item.Item.SpriteNeutral;
+			droppedItem.GetComponent<Item>().SpriteHighlighted = item.Item.SpriteHighlighted;
 		}
 	}
 
@@ -159,7 +165,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 		ItemType movingType = source.CurrentItem.Item.Type;
 
 		if (source != null && destination != null) {
-			//bool needToRecalculateStats = source.transform.parent == CharacterPanel.Instance.transform || destination.transform.parent == CharacterPanel.Instance.transform;
+			bool needToRecalculateStats = source.transform.parent == CharacterPanel.Instance.transform || destination.transform.parent == CharacterPanel.Instance.transform;
 
 			if(destination.canContain == ItemType.GENERIC || movingType == destination.canContain) {
 				Stack<ItemHolder> tempDestination = new Stack<ItemHolder>(destination.Items);
@@ -178,9 +184,9 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 				}
 			}
 
-			/*if (needToRecalculateStats) {
+			if (needToRecalculateStats) {
 				CharacterPanel.Instance.CalculateStats();
-			}*/
+			}
 		}
 
 		/*Stack<ItemHolder> temp = new Stack<ItemHolder>(destination.Items);

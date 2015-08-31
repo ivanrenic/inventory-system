@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum ItemType {MANA, HEALTH, CONSUMEABLE, MAINHAND, TWOHAND, OFFHAND, HEAD, NECK, CHEST, RING, LEGS, BRACERS, BOOTS, TRINKET, SHOULDERS, BELT, GENERIC, GENERICWEAPON};
-public enum Quality {COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, ARTIFACT};
+public enum ItemType {KAPA, MAJICA, HLACE, CIPELE, TRASH, ALUMINIJ, PLASTIKA, BATERIJA, BRIEFCASE, GENERIC};
 
 public abstract class Item : MonoBehaviour {
 
 	public ItemType Type;
-	public Quality Quality;
 	public Sprite SpriteNeutral;
 	public Sprite SpriteHighlighted;
+	public Sprite SpriteDrop;
+	public Sprite SpriteDropPickupable;
 	public int MaxStack;
 
 	public string ItemName;
@@ -26,27 +26,14 @@ public abstract class Item : MonoBehaviour {
 			newLine = "\n";
 		}
 
-		switch (Quality) {
-		case Quality.COMMON:
-			color = "black";
-			break;
-		case Quality.UNCOMMON:
-			color = "lime";
-			break;
-		case Quality.RARE:
-			color = "navy";
-			break;
-		case Quality.EPIC:
-			color = "magenta";
-			break;
-		case Quality.LEGENDARY:
-			color = "orange";
-			break;
-		case Quality.ARTIFACT:
-			color = "red";
-			break;
-		}
+		return string.Format("<color=white><size=16><b>{0}</b></size></color><size=14><i><color=#940084ff>" + newLine + "{1}</color></i>\n<color=white>{2}</color></size>", ItemName, ItemDescription, Type.ToString().ToLower());
+	}
 
-		return string.Format("<color=" + color + "><size=16>{0}</size></color><size=14><i><color=lime>" + newLine + "{1}</color></i>\n{2}</size>", ItemName, ItemDescription, Type.ToString().ToLower());
+	public void Glow() {
+		gameObject.GetComponent<SpriteRenderer>().sprite = SpriteDropPickupable;
+	}
+	
+	public void Unglow() {
+		gameObject.GetComponent<SpriteRenderer>().sprite = SpriteDrop;
 	}
 }

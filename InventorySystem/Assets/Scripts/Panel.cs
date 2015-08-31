@@ -71,12 +71,15 @@ public abstract class Panel : MonoBehaviour {
 		
 		RectTransform hoverTransform = PanelManager.Instance.HoverObject.GetComponent<RectTransform>();
 		RectTransform clickedTransform = PanelManager.Instance.Clicked.GetComponent<RectTransform>();
+
+		float slotSize = GameObject.Find("Inventory").GetComponent<Inventory>().GetSlotSize();
 		
-		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clickedTransform.sizeDelta.x * GameObject.Find("Inventory").GetComponent<RectTransform>().localScale.x);
-		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clickedTransform.sizeDelta.y * GameObject.Find("Inventory").GetComponent<RectTransform>().localScale.y);
+		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotSize * GameObject.Find("Inventory").GetComponent<RectTransform>().localScale.x);
+		hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotSize * GameObject.Find("Inventory").GetComponent<RectTransform>().localScale.y);
 		
 		//hoverObject.transform.SetParent(GameObject.Find("Canvas").transform, true);
 		PanelManager.Instance.HoverObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
+		//PanelManager.Instance.HoverObject.transform.localScale = GameObject.Find("Inventory").GetComponent<Inventory>().GetSlotSize();
 		PanelManager.Instance.HoverObject.transform.localScale = PanelManager.Instance.Clicked.gameObject.transform.localScale;
 		
 		if (PanelManager.Instance.Source == null || PanelManager.Instance.Source.IsEmpty)

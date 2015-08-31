@@ -3,12 +3,16 @@ using System.Collections;
 using UnityEngine.EventSystems;
 
 public class Pickup : MonoBehaviour {
+	public bool Pickupable = false;
+
 	void Awake() {
 		gameObject.GetComponent<ItemHolder>().Item = gameObject.GetComponent<Item>();
 	}
 
-	void OnMouseUp() {
-		GameObject.Find("Inventory").GetComponent<Inventory>().AddItem(gameObject.GetComponent<ItemHolder>());
-		Destroy(gameObject);
+	void OnMouseDown() {
+		if (Pickupable) {
+			GameObject.Find("Inventory").GetComponent<Inventory>().AddItem(gameObject.GetComponent<ItemHolder>());
+			Destroy(gameObject);
+		}
 	}
 }

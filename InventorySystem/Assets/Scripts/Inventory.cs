@@ -15,6 +15,8 @@ public class Inventory : Panel {
 	//public GameObject slotPrefab;
 	private int hoverOffset = 20;
 
+	public GameObject background;
+
 	private EventSystem m_eventSystem;
 	//private PanelManager PanelManager.Instance;
 
@@ -79,6 +81,7 @@ public class Inventory : Panel {
 		//sizeText = sizeTextObject;
 		//visualText = visualTextObject;
 		//selectStackSizeObject = selectStackSize;
+
 		CreateLayout();
 
 		playerRef = GameObject.Find("Player");
@@ -153,7 +156,7 @@ public class Inventory : Panel {
 		if (PanelManager.Instance.tooltipObject.activeSelf) {
 			Vector2 position = Input.mousePosition;
 			Rect rect = PanelManager.Instance.tooltipObject.GetComponent<RectTransform>().rect;
-			position.Set(position.x - rect.width, position.y + rect.height * 2.5f);
+			position.Set(position.x - rect.width * 2f, position.y + rect.height * 4f);
 			PanelManager.Instance.tooltipObject.transform.position = position;
 		}
 
@@ -201,6 +204,10 @@ public class Inventory : Panel {
 		PanelManager.Instance.tooltipObject.SetActive(false);
 	}*/
 
+	public float GetSlotSize() {
+		return allSlots[0].gameObject.GetComponent<RectTransform>().sizeDelta.x;
+	}
+
 	public virtual void CreateLayout() {
 		allSlots = new List<GameObject>();
 		emptySlots = slots;
@@ -211,8 +218,8 @@ public class Inventory : Panel {
 		inventoryHeight = rows * (slotSize + slotPaddingTop) + slotPaddingTop;
 
 		inventoryRect = m_slotContainer.GetComponent<RectTransform>();
-		inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inventoryWidth);
-		inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventoryHeight);
+		//inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inventoryWidth);
+		//inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventoryHeight);
 
 		for (int i = 0; i < slots; i++) {
 			GameObject newSlot = Instantiate(PanelManager.Instance.slotPrefab) as GameObject;
@@ -358,8 +365,10 @@ public class Inventory : Panel {
 
 				if (slotScript.IsEmpty) {
 					slotScript.AddItem(item);
-					if (item.Item.Type != ItemType.CONSUMEABLE || item.Item.Type != ItemType.HEALTH && CharacterPanel.Instance.CanEquip(item)) {
-						item.Use(slotScript);
+					if (item.Item.Type != ItemType.ALUMINIJ && item.Item.Type != ItemType.BATERIJA && item.Item.Type != ItemType.PLASTIKA) {
+						if (CharacterPanel.Instance.CanEquip(item)) {
+							item.Use(slotScript);
+						}
 					}
 					emptySlots -= 1;
 					return true;
@@ -521,6 +530,7 @@ public class Inventory : Panel {
 	public override void Toggle() {
 		if (shown) {
 			shown = false;
+			background.SetActive(false);
 			gameObject.GetComponent<RectTransform>().position = new Vector3(
 				gameObject.GetComponent<RectTransform>().position.x + 1000f,
 				gameObject.GetComponent<RectTransform>().position.y,
@@ -531,6 +541,7 @@ public class Inventory : Panel {
 			}
 		} else {
 			shown = true;
+			background.SetActive(true);
 			gameObject.GetComponent<RectTransform>().position = new Vector3(
 				gameObject.GetComponent<RectTransform>().position.x - 1000f,
 				gameObject.GetComponent<RectTransform>().position.y,
